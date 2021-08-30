@@ -5,16 +5,23 @@
       row-key="name"
       :columns="columns"
       :rows="rows"
+      :dark="dark"
+    />
+    <q-toggle
+      v-model="dark"
+      :label="`Dark mode is ${dark}`"
     />
   </q-page>
 </template>
 
 <script>
+import { ref } from 'vue'
 
 export default {
   name: 'PageIndex',
   setup () {
     return {
+      dark: ref(true),
       columns: [
         { name: 'name',           label: 'Name',            field: 'name' },
         { name: 'description',    label: 'Description',     field: 'description' },

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductCollection;
 
 
 class ProductController extends Controller
@@ -15,19 +17,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-
-        return view('products.index', compact('products'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('products.create');
+        return new ProductCollection(
+            Product::all()
+        );
     }
 
     /**
@@ -42,10 +34,9 @@ class ProductController extends Controller
             'name' => 'required',
         ]);
 
-        Product::create($request->all());
+        $product = Product::create($request->all());
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
+        return new ProductResource($product);
     }
 
     /**
@@ -56,18 +47,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        return view('products.edit', compact('product'));
+        return new ProductResource( $product );
     }
 
     /**
@@ -84,8 +64,7 @@ class ProductController extends Controller
         ]);
         $product->update($request->all());
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully');
+        return new ProductResource($product);
     }
 
     /**
@@ -98,7 +77,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully');
+        return response()->json(null, 204);
     }
 }

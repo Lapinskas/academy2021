@@ -1,11 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
 
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\ProductCollection;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,16 +24,15 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-// Route::resource('products', ProductController::class);
-
-Route::get('/products/{id}', function ($id) {
-    return new ProductResource(
-        Product::findOrFail($id)
-    );
-});
-
-Route::get('/products', function () {
-    return new ProductCollection(Product::all());
+Route::group([
+    'prefix' => 'products',
+    'namespace' => 'App\Http\Controllers'
+], static function () {
+    Route::get('/',         'ProductController@index');
+    Route::get('/{product}',     'ProductController@show');
+    Route::post('/',        'ProductController@store');
+    Route::put('/{product}',     'ProductController@update');
+    Route::delete('/{product}',     'ProductController@destroy');
 });
 
 require __DIR__.'/auth.php';

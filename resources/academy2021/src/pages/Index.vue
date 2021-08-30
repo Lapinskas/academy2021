@@ -4,7 +4,7 @@
       title="Products"
       row-key="name"
       :columns="columns"
-      :rows="rows"
+      :rows="products"
       :dark="dark"
     />
     <q-toggle
@@ -31,6 +31,14 @@ export default {
       'products',
       'productsLoading'
     ]),
+  },
+  methods: {
+    ...mapActions('products', [
+      'getProducts'
+    ]),
+  },
+  beforeMount() {
+    this.getProducts()
   }
 }
 </script>
